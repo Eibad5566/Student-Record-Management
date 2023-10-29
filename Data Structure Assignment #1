@@ -1,0 +1,301 @@
+# Student-Record-Management
+Data Structure (Assignment) 
+// Que#2 : Add 100 randomly generated numbers to the list, write the c code that sorts all the 
+numbers entered from largest to smallest and prints them on the screen.
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+// Function to swap two integers
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+int main() {
+    // Seed the random number generator with the current time
+    srand(time(NULL));
+
+    int n = 100; // Number of random numbers
+    int numbers[n];
+
+    // Generate and store random numbers
+    for (int i = 0; i < n; i++) {
+        numbers[i] = rand() % 500; // Limit the range to less than 500
+    }
+
+    // Bubble Sort algorithm
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (numbers[j] < numbers[j + 1]) {
+                // Swap the two numbers if they are in the wrong order
+                swap(&numbers[j], &numbers[j + 1]);
+            }
+        }
+    }
+
+    // Print the sorted numbers
+    printf("Sorted numbers in descending order using Bubble Sort:\n");
+    for (int i = 0; i < n; i++) {
+        printf("%d\n", numbers[i]);
+    }
+
+    return 0;
+}
+
+// Que#4 :Write a function that stores the student number, name and age, traverses all the nodes in 
+the list, writes all the student information on the screen and counts it. 
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+   char name[20];
+    int age;
+    int number;
+    struct Node* next;
+} Node;
+
+void addStudent(Node** head,char* name, int age,int number) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+   
+    strcpy(newNode->name, name);
+    newNode->age = age;
+     newNode->number = number;
+     
+    newNode->next = *head;
+    *head = newNode;
+}
+
+void printAllStudents(Node* head) {
+    int count = 0;
+    Node* temp = head;
+    while (temp != NULL) {
+        printf("Student Name: %s\n", temp->name);
+        printf("Student Age: %d\n", temp->age);
+         printf("Student Number: %d\n\n", temp->number);
+        temp = temp->next;
+        count++;
+    }
+    printf("Total Count: %d\n", count);
+}
+
+int main() {
+    Node* head = NULL;
+    addStudent(&head,"Ebad", 20, 1);
+    addStudent(&head,"Hussain", 25, 2);
+    addStudent(&head,"Bilal", 23, 3);
+    printAllStudents(head);
+    return 0;
+}
+
+// Que#5 : Write the function that searches records by student name in the list.
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Student {
+    int studentNumber;
+    char name[50];
+    int age;
+    struct Student* next;
+} Student;
+
+// Function to display the records
+void display(Student* record) {
+    printf("Student Number: %d\n", record->studentNumber);
+    printf("Name: %s\n", record->name);
+    printf("Age: %d\n", record->age);
+}
+
+// Function to search a record by student name
+Student* search(Student* list, const char* name) {
+    while (list != NULL) {
+        if (strcmp(list->name, name) == 0) {
+            return list;
+        }
+        list = list->next;
+    }
+    return NULL;
+}
+
+int main() {
+    // Initializing a list of students
+    Student* studentList = NULL; // Initialize an empty list
+
+    // Add a student to the list
+    Student* student1 = (Student*)malloc(sizeof(Student));
+    student1->studentNumber = 1;
+    strcpy(student1->name, "Ebad");
+    student1->age = 20;
+    student1->next = NULL; // Initialize next pointer
+
+    studentList = student1; // Set the head of the list
+
+    // Searching a student by name
+    const char nameToSearch[] = "Ebad";
+    Student* foundStudent = search(studentList, nameToSearch);
+
+    if (foundStudent != NULL) {
+        printf("Found student:\n");
+        display(foundStudent);
+    } else {
+        printf("Student not found.\n");
+    }
+
+    // Free allocated memory for the student node
+    free(student1); // Make sure to free the memory for the student node
+
+    return 0;
+}
+
+// Que# 6 : Write the function that deletes the next node from the node with the searched student 
+name in the list. 
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// structure of node
+typedef struct Node {
+    char name[50];
+    int age;
+    struct Node* next;
+} Node;
+
+// function to delete next node from a given node
+void deleteNextNode(Node* start, char* searchName) {
+    Node* current = start;
+
+    while (current != NULL) {
+        if (strcmp(current->name, searchName) == 0) {
+            Node* nextNext = current->next->next;
+            free(current->next);
+            current->next = nextNext;
+            break;
+        }
+        current = current->next;
+    }
+}
+
+// function to insert node at the end of the list
+void insertNode(Node** head, char* name, int age) {
+    Node* newNode = (Node*) malloc(sizeof(Node));
+    strcpy(newNode->name, name);
+    newNode->age = age;
+    newNode->next = NULL;
+
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+
+    Node* last = *head;
+    while (last->next != NULL) {
+        last = last->next;
+    }
+
+    last->next = newNode;
+}
+
+// function to print the list
+void printList(Node* node) {
+    while (node != NULL) {
+        printf("Name: %s\n", node->name);
+        printf("Age: %d\n", node->age);
+        node = node->next;
+    }
+}
+
+int main() {
+    Node* head = NULL;
+
+    insertNode(&head, "Ebad", 20);
+    insertNode(&head, "Hussain", 25);
+    insertNode(&head, "Bilal", 25);
+
+    printList(head);
+
+    deleteNextNode(head, "Hussain");
+
+    printf("\nList after deleting the next node:\n");
+    printList(head);
+
+    return 0;
+}
+
+// Que#7 : Write the function that prints the record with the longest name in the list.
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// structure of node
+typedef struct Node {
+    char name[50];
+    int age;
+    struct Node* next;
+} Node;
+
+// function to insert node at the end of the list
+void insertNode(Node** head, char* name, int age) {
+    Node* newNode = (Node*) malloc(sizeof(Node));
+    strcpy(newNode->name, name);
+    newNode->age = age;
+    newNode->next = NULL;
+
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+
+    Node* last = *head;
+    while (last->next != NULL) {
+        last = last->next;
+    }
+
+    last->next = newNode;
+}
+
+// function to print the list
+void printList(Node* node) {
+    while (node != NULL) {
+        printf("Name: %s\n", node->name);
+        printf("Age: %d\n", node->age);
+        node = node->next;
+    }
+}
+
+// function to find the longest name in the list
+void findLongestName(Node* head) {
+    Node* longestNode = head;
+    Node* current = head;
+
+    while (current != NULL) {
+        if (strlen(current->name) > strlen(longestNode->name)) {
+            longestNode = current;
+        }
+        current = current->next;
+    }
+
+    printf("The longest name in the list: %s\n", longestNode->name);
+    printf("Length: %d\n", (int)strlen(longestNode->name));
+}
+
+int main() {
+    Node* head = NULL;
+
+    insertNode(&head, "Ebad", 20);
+    insertNode(&head, "Hussain", 25);
+    insertNode(&head, "Bilal", 23);
+
+    printList(head);
+
+    printf("\nLongest name in the list:\n");
+    findLongestName(head);
+
+    return 0;
+}
